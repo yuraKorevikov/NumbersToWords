@@ -25,7 +25,7 @@ public class NumbersToWords {
     }
 
     NumbersToWords() {
-        readTriadFromFile();
+        readUnitsFromFile();
     }
 
     private static final String SEPARATOR = " ";
@@ -42,17 +42,18 @@ public class NumbersToWords {
     private static final String[] HUNDREDS = new String[]{"сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
             "семьсот", "восемьсот", "девятьсот"};
 
-    private Map<Integer, String> degreeThousand;
+    private Map<Integer, String> degreeThousands;
 
-    private void readTriadFromFile() {
-        degreeThousand = new LinkedHashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("triads.txt"))) {
+    private void readUnitsFromFile() {
+        degreeThousands = new LinkedHashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/degreeThousands.txt" +
+                ""))) {
             String line;
             String triad[];
 
             while ((line = reader.readLine()) != null) {
                 triad = line.split("-");
-                degreeThousand.put(Integer.valueOf(triad[0]), triad[1]);
+                degreeThousands.put(Integer.valueOf(triad[0]), triad[1]);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,7 +61,7 @@ public class NumbersToWords {
     }
 
     public String convert(String numberToConvert) {
-        this.dataCorrecntes(numberToConvert);
+        this.dataCorrectness(numberToConvert);
         number = numberToConvert;
         String stringWithWords = "";
 
@@ -74,13 +75,19 @@ public class NumbersToWords {
             return words;
         }
 
-        // Определяем максимальный разряд числа
-        int degree = 0;
-        for (Integer key : degreeThousand.keySet())
+        /**
+         * Определяем максимальный разряд числа
+          */
+        int maxDegree = 0;
+        for (Integer key : degreeThousands.keySet())
             if (numberToConvert.length() > key)
-                degree = key;
+                maxDegree = key;
 
-        if (numberToConvert.length() > (degree + 3))
+        /**
+         * проверка не больше ли длинна числа, чем
+         * максимальный разряд именованной константы хранимой в файле
+         */
+        if (numberToConvert.length() > (maxDegree + 3))
             throw new IllegalArgumentException("Размер числа превышает предельный допустимый программой.");
 
         for (int i = 0; i < numberToConvert.length() % 3; i++)
@@ -88,16 +95,16 @@ public class NumbersToWords {
 
         for (int i = 0; i < numberToConvert.length(); i += 3) {
             String threeSumbols = numberToConvert.substring(i, i + 3);
-            if (threeSumbols.equals("000"))
+            if (threeSumbols.equals("000"))//Заккоментить этот момент
                 continue;
-            stringWithWords += threeSymbols(threeSumbols, degree - i) + SEPARATOR;
+            stringWithWords += threeSymbols(threeSumbols, maxDegree - i) + SEPARATOR;
         }
 
         words = stringWithWords.trim();
         return words;
     }
 
-    private void dataCorrecntes(String numberToConvert) {
+    private void dataCorrectness(String numberToConvert) {
         Pattern pattern = Pattern.compile("[-]?[0-9]+");
         Matcher m = pattern.matcher(numberToConvert);
         if (!m.matches())
@@ -115,20 +122,20 @@ public class NumbersToWords {
 
             case 3: {
                 if (decades != 1 && units == 1)
-                    return degreeThousand.get(key) + "а";
+                    return degreeThousands.get(key) + "а";
                 else if (decades != 1 && units >= 2 && units <= 4)
-                    return degreeThousand.get(key) + "и";
+                    return degreeThousands.get(key) + "и";
                 else
-                    return degreeThousand.get(key) + "";
+                    return degreeThousands.get(key) + "";
             }
 
             default: {
                 if (decades != 1 && units == 1)
-                    return degreeThousand.get(key) + "";
+                    return degreeThousands.get(key) + "";
                 else if (decades != 1 && units >= 2 && units <= 4)
-                    return degreeThousand.get(key) + "а";
+                    return degreeThousands.get(key) + "а";
                 else
-                    return degreeThousand.get(key) + "ов";
+                    return degreeThousands.get(key) + "ов";
             }
         }
     }

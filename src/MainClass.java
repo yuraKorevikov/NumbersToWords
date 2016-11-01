@@ -5,7 +5,7 @@ public class MainClass {
     public static void main(String args[]){
         try {
             NumbersToWords numbersToWords = new NumbersToWords();
-            System.out.println(numbersToWords.convert("1000"));
+            System.out.println(numbersToWords.convert("2323741231273412"));
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
