@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -15,12 +13,12 @@ public class NumbersToWords {
     private String words;
 
     public String getNumber() {
-        if(number == null) throw new NullPointerException("Данные пусты, вызовите convert()");
+        if (number == null) throw new NullPointerException("Данные пусты, вызовите convert()");
         return number;
     }
 
     public String getWords() {
-        if(words == null) throw new NullPointerException("Данные пусты, вызовите convert()");
+        if (words == null) throw new NullPointerException("Данные пусты, вызовите convert()");
         return words;
     }
 
@@ -46,17 +44,20 @@ public class NumbersToWords {
 
     private void readUnitsFromFile() {
         degreeThousands = new LinkedHashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/degreeThousands.txt" +
-                ""))) {
-            String line;
-            String triad[];
 
-            while ((line = reader.readLine()) != null) {
-                triad = line.split("-");
+
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream("data/degreeThousands.txt"), "Windows-1251"))) {
+            String nextString;
+            String triad[];
+            while ((nextString = br.readLine()) != null) {
+                triad = nextString.split("-");
                 degreeThousands.put(Integer.valueOf(triad[0]), triad[1]);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        } catch (IOException ex) {
+            throw new RuntimeException(ex.getMessage());
         }
     }
 
@@ -77,7 +78,7 @@ public class NumbersToWords {
 
         /**
          * Определяем максимальный разряд числа
-          */
+         */
         int maxDegree = 0;
         for (Integer key : degreeThousands.keySet())
             if (numberToConvert.length() > key)
