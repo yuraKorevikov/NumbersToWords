@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
  * Created by Yura on 30.10.2016.
  */
 public class NumbersToWords {
-
     private String number;
     private String words;
     private boolean checker = true;
@@ -20,7 +19,7 @@ public class NumbersToWords {
 
     private static final String SEPARATOR = " ";
 
-    private void initialization(){
+    private void initialization() {
         tokens = new ArrayList<>();
         readResource("src/resources/info.txt", tokens);
         plurmtok = new ArrayList<>();
@@ -44,7 +43,7 @@ public class NumbersToWords {
         return words;
     }
 
-    public void readResource(String filepath, ArrayList<String> arrayList) {
+    private void readResource(String filepath, ArrayList<String> arrayList) {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
                         new FileInputStream(filepath), "UTF-8"))) {
@@ -57,15 +56,15 @@ public class NumbersToWords {
         }
     }
 
-    public void readUnitsFromFile() {
+    private void readUnitsFromFile() {
         degreeThousands = new TreeMap<>();
         Properties prop = new Properties();
 
         try (FileInputStream fis = new FileInputStream("src/resources/prop")) {
             prop.loadFromXML(fis);
 
-            for(String keys: prop.stringPropertyNames())
-                    degreeThousands.put(Integer.valueOf(keys), prop.getProperty(keys));
+            for (String keys : prop.stringPropertyNames())
+                degreeThousands.put(Integer.valueOf(keys), prop.getProperty(keys));
 
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
@@ -73,7 +72,7 @@ public class NumbersToWords {
     }
 
     public String convert(String numberToConvert) {
-        if(checker)
+        if (checker)
             initialization();
 
         this.dataCorrectness(numberToConvert);
@@ -155,7 +154,6 @@ public class NumbersToWords {
         }
     }
 
-
     private String threeSymbols(String str, Integer key) {
         String tempString = "";
 
@@ -189,7 +187,6 @@ public class NumbersToWords {
                     else
                         tempString += (tokens.get(i));
         }
-
         String degreeThousand = SEPARATOR + returnNamedDegree(twoLastSymb, key);
 
         return (tempString + degreeThousand).trim();
