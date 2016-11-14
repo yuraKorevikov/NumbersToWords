@@ -1,6 +1,5 @@
 import java.io.*;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +10,29 @@ public class NumbersToWords {
 
     private String number;
     private String words;
+    private boolean checker = true;
+
+    private Map<Integer, String> degreeThousands;
+    private static ArrayList<String> tokens;
+    private static ArrayList<String> plurmtok;
+    private static ArrayList<String> decades;
+    private static ArrayList<String> hundreds;
+
+    private static final String SEPARATOR = " ";
+
+    private void initialization(){
+        tokens = new ArrayList<>();
+        readResource("src/resources/info.txt", tokens);
+        plurmtok = new ArrayList<>();
+        readResource("src/resources/plurmtok.txt", plurmtok);
+        decades = new ArrayList<>();
+        readResource("src/resources/decades.txt", decades);
+        hundreds = new ArrayList<>();
+        readResource("src/resources/hundreds.txt", hundreds);
+
+        readUnitsFromFile();
+        checker = false;
+    }
 
     public String getNumber() {
         if (number == null) throw new NullPointerException("Данные пусты, вызовите convert()");
@@ -22,46 +44,38 @@ public class NumbersToWords {
         return words;
     }
 
-    NumbersToWords() {
-        readUnitsFromFile();
-    }
-
-    private static final String SEPARATOR = " ";
-
-    private static final String[] TOKENS = new String[]{"", "один", "два", "три", "четыре", "пять",
-            "шесть", "семь", "восемь", "девять", "десять", "одиннадцать", "двенадцать", "тринадцать",
-            "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"};
-
-    private static final String[] PLURMTOKENS = new String[]{"ноль", "одна", "две"};
-
-    private static final String[] DECADE = new String[]{"двадцать", "тридцать", "сорок",
-            "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"};
-
-    private static final String[] HUNDREDS = new String[]{"сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот",
-            "семьсот", "восемьсот", "девятьсот"};
-
-    private Map<Integer, String> degreeThousands;
-
-    private void readUnitsFromFile() {
-        degreeThousands = new LinkedHashMap<>();
-
-
+    public void readResource(String filepath, ArrayList<String> arrayList) {
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(
-                        new FileInputStream("data/degreeThousands.txt"), "Windows-1251"))) {
+                        new FileInputStream(filepath), "UTF-8"))) {
             String nextString;
-            String triad[];
-            while ((nextString = br.readLine()) != null) {
-                triad = nextString.split("-");
-                degreeThousands.put(Integer.valueOf(triad[0]), triad[1]);
-            }
+            while ((nextString = br.readLine()) != null)
+                arrayList.add(nextString);
 
         } catch (IOException ex) {
             throw new RuntimeException(ex.getMessage());
         }
     }
 
+    public void readUnitsFromFile() {
+        degreeThousands = new TreeMap<>();
+        Properties prop = new Properties();
+
+        try (FileInputStream fis = new FileInputStream("src/resources/prop")) {
+            prop.loadFromXML(fis);
+
+            for(String keys: prop.stringPropertyNames())
+                    degreeThousands.put(Integer.valueOf(keys), prop.getProperty(keys));
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+    }
+
     public String convert(String numberToConvert) {
+        if(checker)
+            initialization();
+
         this.dataCorrectness(numberToConvert);
         number = numberToConvert;
         String stringWithWords = "";
@@ -72,7 +86,7 @@ public class NumbersToWords {
         }
 
         if (number.equals("0")) {
-            words = PLURMTOKENS[0];
+            words = plurmtok.get(0);
             return words;
         }
 
@@ -89,7 +103,7 @@ public class NumbersToWords {
          * максимальный разряд именованной константы хранимой в файле
          */
         if (numberToConvert.length() > (maxDegree + 3))
-            throw new IllegalArgumentException("Размер числа превышает предельный допустимый программой.");
+            throw new NumberFormatException("Размер числа превышает предельный допустимый программой.");
 
         for (int i = 0; i < numberToConvert.length() % 3; i++)
             numberToConvert = "0" + numberToConvert;
@@ -150,15 +164,15 @@ public class NumbersToWords {
 
         for (int i = 1; i < 10; i++)
             if (firstSymb == i)
-                tempString += HUNDREDS[i - 1] + SEPARATOR;
+                tempString += hundreds.get(i - 1) + SEPARATOR;
 
         if (twoLastSymb >= 0 && twoLastSymb <= 19) {
             for (int i = 0; i <= 19; i++)
                 if (twoLastSymb == i)
                     if (key == 3 && (i == 1 || i == 2)) //проверка является ли число разряд тысячным
-                        tempString += (PLURMTOKENS[i]);
+                        tempString += (plurmtok.get(i));
                     else
-                        tempString += (TOKENS[i]);
+                        tempString += (tokens.get(i));
 
         } else {
             int secondSymb = Integer.valueOf(str.substring(1, 2));
@@ -166,14 +180,14 @@ public class NumbersToWords {
 
             for (int i = 0; i < 10; i++)
                 if (secondSymb == i)
-                    tempString += DECADE[i - 2] + SEPARATOR;
+                    tempString += decades.get(i - 2) + SEPARATOR;
 
             for (int i = 0; i < 10; i++)
                 if (thirdSymb == i)
                     if (key == 3 && (i == 1 || i == 2))
-                        tempString += (PLURMTOKENS[i]);
+                        tempString += (plurmtok.get(i));
                     else
-                        tempString += (TOKENS[i]);
+                        tempString += (tokens.get(i));
         }
 
         String degreeThousand = SEPARATOR + returnNamedDegree(twoLastSymb, key);

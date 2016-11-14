@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Here are some favorites</comment>
+    <entry key="3">тысяч</entry>
+    <entry key="6">миллион</entry>
+    <entry key="9">миллиард</entry>
+    <entry key="12">триллион</entry>
+    <entry key="15">квадриллион</entry>
+    <entry key="18">квинтиллион</entry>
+    <entry key="21">секстиллион</entry>
+    <entry key="24">септиллион</entry>
+    <entry key="27">октиллион</entry>
+    <entry key="30">нониллион</entry>
+    <entry key="33">дециллион</entry>
+    <entry key="36">андециллион</entry>
+    <entry key="39">дуодециллион</entry>
+    <entry key="42">тредециллион</entry>
+    <entry key="45">кваттордециллион</entry>
+    <entry key="48">квиндециллион</entry>
+    <entry key="51">сексдециллион</entry>
+    <entry key="54">септемдециллион</entry>
+    <entry key="57">октодециллион</entry>
+    <entry key="60">новемдециллион</entry>
+    <entry key="63">вигинтиллион</entry>
+</properties>
