@@ -12,12 +12,12 @@ public class NumbersToWords {
     private boolean checker = true;
 
     private Map<Integer, String> degreeThousands;
-    private static ArrayList<String> tokens;
-    private static ArrayList<String> plurmtok;
-    private static ArrayList<String> decades;
-    private static ArrayList<String> hundreds;
+    private ArrayList<String> tokens;
+    private ArrayList<String> plurmtok;
+    private ArrayList<String> decades;
+    private ArrayList<String> hundreds;
 
-    private static final String SEPARATOR = " ";
+    private final String SEPARATOR = " ";
 
     private void initialization() {
         tokens = new ArrayList<>();
@@ -187,6 +187,7 @@ public class NumbersToWords {
                     else
                         tempString += (tokens.get(i));
         }
+
         String degreeThousand = SEPARATOR + returnNamedDegree(twoLastSymb, key);
 
         return (tempString + degreeThousand).trim();

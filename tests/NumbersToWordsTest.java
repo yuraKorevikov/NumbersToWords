@@ -1,16 +1,11 @@
-import com.sun.xml.internal.ws.api.pipe.FiberContextSwitchInterceptor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -66,9 +61,5 @@ public class NumbersToWordsTest {
             String actual = testedObj.convert(key);
             assertEquals("Error in the dataDrivenTest, mistake in number: " + key, expected, actual);
         }
-
-
-
-
     }
 }
