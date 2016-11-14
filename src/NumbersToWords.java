@@ -13,7 +13,7 @@ public class NumbersToWords {
 
     private Map<Integer, String> degreeThousands;
     private ArrayList<String> tokens;
-    private ArrayList<String> plurmtok;
+    private ArrayList<String> plurmtokens;
     private ArrayList<String> decades;
     private ArrayList<String> hundreds;
 
@@ -21,15 +21,15 @@ public class NumbersToWords {
 
     private void initialization() {
         tokens = new ArrayList<>();
-        readResource("src/resources/info.txt", tokens);
-        plurmtok = new ArrayList<>();
-        readResource("src/resources/plurmtok.txt", plurmtok);
+        readResource("src/resources/tokens.txt", tokens);
+        plurmtokens = new ArrayList<>();
+        readResource("src/resources/plurmtokens.txt", plurmtokens);
         decades = new ArrayList<>();
         readResource("src/resources/decades.txt", decades);
         hundreds = new ArrayList<>();
         readResource("src/resources/hundreds.txt", hundreds);
 
-        readUnitsFromFile();
+        readDegreeThousands();
         checker = false;
     }
 
@@ -56,11 +56,11 @@ public class NumbersToWords {
         }
     }
 
-    private void readUnitsFromFile() {
+    private void readDegreeThousands() {
         degreeThousands = new TreeMap<>();
         Properties prop = new Properties();
 
-        try (FileInputStream fis = new FileInputStream("src/resources/prop")) {
+        try (FileInputStream fis = new FileInputStream("src/resources/degree")) {
             prop.loadFromXML(fis);
 
             for (String keys : prop.stringPropertyNames())
@@ -85,7 +85,7 @@ public class NumbersToWords {
         }
 
         if (number.equals("0")) {
-            words = plurmtok.get(0);
+            words = plurmtokens.get(0);
             return words;
         }
 
@@ -168,7 +168,7 @@ public class NumbersToWords {
             for (int i = 0; i <= 19; i++)
                 if (twoLastSymb == i)
                     if (key == 3 && (i == 1 || i == 2)) //проверка является ли число разряд тысячным
-                        tempString += (plurmtok.get(i));
+                        tempString += (plurmtokens.get(i));
                     else
                         tempString += (tokens.get(i));
 
@@ -183,7 +183,7 @@ public class NumbersToWords {
             for (int i = 0; i < 10; i++)
                 if (thirdSymb == i)
                     if (key == 3 && (i == 1 || i == 2))
-                        tempString += (plurmtok.get(i));
+                        tempString += (plurmtokens.get(i));
                     else
                         tempString += (tokens.get(i));
         }
